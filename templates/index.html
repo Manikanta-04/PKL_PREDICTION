@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PKL Match Predictor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            background: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 20px;
+        }
+        select:hover {
+            border-color: #667eea;
+        }
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+        }
+        .vs-separator {
+            text-align: center;
+            margin: 10px 0;
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.3em;
+        }
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            letter-spacing: 0.5px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102,126,234,0.4);
+        }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 15px;
+            background: #f8f9fa;
+            display: none;
+        }
+        .result.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .winner-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 10px 30px rgba(102,126,234,0.3);
+        }
+        .winner-box h2 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            opacity: 0.95;
+        }
+        .winner-name {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 15px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .confidence {
+            font-size: 24px;
+            opacity: 0.95;
+        }
+        .batch-upload {
+            margin-top: 40px;
+            padding: 25px;
+            border-top: 2px dashed #e0e0e0;
+            background: #fafafa;
+            border-radius: 15px;
+        }
+        .batch-upload h3 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.3em;
+        }
+        .batch-upload p {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+        .file-input {
+            margin-bottom: 15px;
+        }
+        .file-input input[type=file] {
+            width: 100%;
+            padding: 12px;
+            background: white;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .file-input input[type=file]:hover {
+            background: #f0f3ff;
+        }
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 30px auto;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error {
+            color: #dc3545;
+            text-align: center;
+            padding: 15px;
+            background: #f8d7da;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        .note {
+            text-align: center;
+            color: #888;
+            font-size: 0.9em;
+            margin-top: 20px;
+            font-style: italic;
+        }
+        .team-count {
+            text-align: center;
+            color: #667eea;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏆 PKL Match Predictor</h1>
+        <p class="subtitle">Predict the winner of Pro Kabaddi League matches</p>
+        
+        <!-- Team A Selection -->
+        <div class="form-group">
+            <label>Team A</label>
+            <select id="team_a">
+                <option value="">-- Select Team A --</option>
+                {% for team in teams %}
+                <option value="{{ team }}">{{ team }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="vs-separator">VS</div>
+        
+        <!-- Team B Selection -->
+        <div class="form-group">
+            <label>Team B</label>
+            <select id="team_b">
+                <option value="">-- Select Team B --</option>
+                {% for team in teams %}
+                <option value="{{ team }}">{{ team }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="team-count">{{ teams|length }} teams available</div>
+        
+        <button onclick="predict()">🔮 Predict Winner</button>
+        
+        <div class="loader" id="loader"></div>
+        <div class="error" id="error"></div>
+        
+        <div class="result" id="result">
+            <div class="winner-box">
+                <h2>🏆 Predicted Winner</h2>
+                <div class="winner-name" id="winner">-</div>
+                <div class="confidence" id="confidence">Confidence: --%</div>
+            </div>
+        </div>
+        
+        <div class="batch-upload">
+            <h3>📁 Batch Prediction</h3>
+            <p>Upload CSV with columns: <code>team_a, team_b</code></p>
+            <div class="file-input">
+                <input type="file" id="fileInput" accept=".csv">
+            </div>
+            <button onclick="batchPredict()" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">📊 Process Batch</button>
+        </div>
+        
+        <p class="note">⚡ Powered by Machine Learning | Data from PKL Seasons 1-10</p>
+    </div>
+
+    <script>
+        async function predict() {
+            // Show loader, hide previous results
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('result').classList.remove('show');
+            document.getElementById('error').style.display = 'none';
+            
+            const teamA = document.getElementById('team_a').value;
+            const teamB = document.getElementById('team_b').value;
+            
+            // Validate selections
+            if (!teamA || !teamB) {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('error').textContent = 'Please select both teams';
+                document.getElementById('error').style.display = 'block';
+                return;
+            }
+            
+            // Validate same team selection
+            if (teamA === teamB) {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('error').textContent = 'Please select different teams';
+                document.getElementById('error').style.display = 'block';
+                return;
+            }
+            
+            const data = {
+                team_a: teamA,
+                team_b: teamB
+            };
+            
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                document.getElementById('loader').style.display = 'none';
+                
+                if (result.success) {
+                    document.getElementById('winner').textContent = result.winner;
+                    document.getElementById('confidence').textContent = `Confidence: ${result.confidence}%`;
+                    document.getElementById('result').classList.add('show');
+                } else {
+                    document.getElementById('error').textContent = 'Error: ' + result.error;
+                    document.getElementById('error').style.display = 'block';
+                }
+            } catch (error) {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('error').textContent = 'Network error. Please try again.';
+                document.getElementById('error').style.display = 'block';
+            }
+        }
+        
+        async function batchPredict() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select a CSV file first');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            document.getElementById('loader').style.display = 'block';
+            
+            try {
+                const response = await fetch('/batch_predict', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                document.getElementById('loader').style.display = 'none';
+                
+                if (result.success) {
+                    alert('✅ ' + result.message);
+                    if (result.download_url) {
+                        window.location.href = result.download_url;
+                    }
+                } else {
+                    alert('❌ Error: ' + result.error);
+                }
+            } catch (error) {
+                document.getElementById('loader').style.display = 'none';
+                alert('❌ Network error. Please try again.');
+            }
+        }
+
+        // Add sample CSV download
+        function downloadSampleCSV() {
+            const teams = {{ teams|tojson }};
+            const sampleData = "team_a,team_b\n" + 
+                teams[0] + "," + teams[1] + "\n" +
+                teams[2] + "," + teams[3] + "\n" +
+                teams[4] + "," + teams[5];
+            const blob = new Blob([sampleData], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sample_pkl_matches.csv';
+            a.click();
+        }
+    </script>
+</body>
+</html>

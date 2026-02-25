@@ -1,0 +1,2 @@
+model_name,accuracy,cv_accuracy,n_matches,n_features,features,training_date
+Logistic Regression,0.5984848484848485,0.5549315925959044,1320,10,"['team_a_win_pct_prev', 'team_b_win_pct_prev', 'team_a_points_prev', 'team_b_points_prev', 'team_a_current_wins', 'team_b_current_wins', 'team_a_strength', 'team_b_strength', 'team_a_encoded', 'team_b_encoded']",2026-02-25 22:42:23
