@@ -187,10 +187,14 @@ def get_teams():
     """API endpoint to get list of teams"""
     return jsonify({'teams': teams})
 
+# FIXED: Single main block for Render deployment
 if __name__ == '__main__':
+    # Get port from environment variable (for Render) or default to 5000
+    port = int(os.environ.get('PORT', 5000))
     print("\n" + "=" * 60)
     print("🚀 STARTING PKL MATCH PREDICTOR WEB APP")
     print("=" * 60)
-    print(f"\n📱 Open browser and go to: http://127.0.0.1:5000")
+    print(f"\n📱 Server starting on port: {port}")
     print(f"🏆 Available teams: {len(teams)}")
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # Use debug=False for production
+    app.run(host='0.0.0.0', port=port, debug=False)
