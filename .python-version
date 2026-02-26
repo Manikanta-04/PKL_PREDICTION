@@ -1,0 +1,2 @@
+# In your project directory (run in PowerShell)
+echo "3.11.9" > .python-version
