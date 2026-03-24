@@ -8,7 +8,7 @@
 
 <br/>
 
-[![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-Visit%20Now-ff6b00?style=for-the-badge)](https://pkl-prediction.vercel.app)
+[![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-Visit%20Now-ff6b00?style=for-the-badge)](pkl-predictor.onrender.com/)
 
 <br/>
 
@@ -27,7 +27,7 @@
 
 | Service | URL |
 |---|---|
-| 🌐 **Web Application** | [pkl-prediction.vercel.app](https://pkl-prediction.vercel.app) *(update with your actual URL)* |
+| 🌐 **Web Application** | [pkl-predictor.onrender.com/](pkl-predictor.onrender.com/) *(update with your actual URL)* |
 
 > 💡 Select any two PKL teams and get an instant winner prediction with a confidence score.
 
