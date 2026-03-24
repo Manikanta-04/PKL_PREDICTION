@@ -8,8 +8,7 @@
 
 <br/>
 
-[![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-Visit%20Now-ff6b00?style=for-the-badge)](pkl-predictor.onrender.com/)
-
+[![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-Visit%20Now-ff6b00?style=for-the-badge)](https://pkl-predictor.onrender.com/)
 <br/>
 
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
@@ -27,8 +26,7 @@
 
 | Service | URL |
 |---|---|
-| 🌐 **Web Application** | [pkl-predictor.onrender.com/](pkl-predictor.onrender.com/) *(update with your actual URL)* |
-
+| 🌐 **Web Application** | [pkl-predictor.onrender.com](https://pkl-predictor.onrender.com/) |
 > 💡 Select any two PKL teams and get an instant winner prediction with a confidence score.
 
 ---
@@ -80,9 +78,10 @@ Pro Kabaddi League matches are unpredictable — fans and analysts rely on gut f
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│                      CLIENT LAYER                         │
-│           HTML5 + CSS3 + Vanilla JavaScript               │
-│   Match Selector | Batch Upload | Team Stats Dashboard    │
+│                      CLIENT LAYER                        │
+│                       Streamlit (Python)                 │
+│                                                          |
+│  Match Selector | Batch Upload | Team Stats Dashboard    │
 └───────────────────────────┬──────────────────────────────┘
                             │  HTTP POST (form / CSV upload)
                             ▼
@@ -110,7 +109,7 @@ Pro Kabaddi League matches are unpredictable — fans and analysts rely on gut f
 
 | Layer | Technology | Purpose |
 |---|---|---|
-| **Frontend** | HTML5, CSS3, JavaScript | Web interface |
+| **Frontend** | Streamlit | Interactive ML web UI |
 | **Backend** | Flask (Python) | REST API + routing |
 | **ML Models** | Scikit-learn, XGBoost | Match outcome classification |
 | **Data Processing** | Pandas, NumPy | Feature engineering & preprocessing |
@@ -265,33 +264,23 @@ POST /batch-predict
 ---
 
 ## 🧪 Testing
-
 ```bash
-# Run the Flask app
-python app.py
+# Open the live app directly
+open https://pkl-predictor.onrender.com/
 
-# Test individual prediction (curl)
-curl -X POST http://127.0.0.1:5000/predict \
-  -H "Content-Type: application/json" \
-  -d '{"team_a": "Patna Pirates", "team_b": "Bengal Warriors"}'
-# Expected: { "winner": "Patna Pirates", "confidence": 67.3 }
+# Or run locally
+streamlit run streamlit_app.py
 
-# Test batch prediction
-curl -X POST http://127.0.0.1:5000/batch-predict \
-  -F "file=@matches.csv"
-# Expected: CSV file download with predicted_winner + confidence columns
-
-# Test team stats endpoint
-curl http://127.0.0.1:5000/api/teams
-# Expected: JSON array of all 12 teams with stats
-
-# Verify model files exist
+# Verify model files exist before running
 ls models/
 # Expected: latest_model.pkl, scaler.pkl, label_encoder.pkl
+
+# Generate dataset (if running fresh)
+python create_pkl_dataset.py
+
+# Train the model (if running fresh)
+python train_model.py
 ```
-
----
-
 ## 📁 Project Structure
 
 ```
